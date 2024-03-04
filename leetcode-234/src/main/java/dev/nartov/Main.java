@@ -25,13 +25,12 @@ public class Main {
             slowAhead = slowAhead.next;
         }
 
-        ListNode slow2 = preslow;
-        if (fast!=null) slow = slow.next;
-        while (slow != null || slow2 != null) {
-            if (slow.val!=slow2.val) return false;
+        if (fast != null) slow = slow.next;
+        while (slow != null || preslow != null) {
+            if (slow.val != preslow.val) return false;
             else {
                 slow = slow.next;
-                slow2 = slow2.next;
+                preslow = preslow.next;
             }
         }
 
