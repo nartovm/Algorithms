@@ -1,115 +1,111 @@
 package dev.nartov;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 class MyLinkedList {
-    int length;
+
     Node head;
     Node tail;
-
-    public class Node {
-        int val;
-        Node next;
-
-        Node(int val) {
-            this.val = val;
-            this.next = null;
-        }
-    }
+    int length;
 
     public MyLinkedList() {
         this.head = null;
+        this.tail = null;
         this.length = 0;
     }
 
     public int get(int index) {
-        if (index < 0 || index > this.length - 1) return -1;
-        Node current = this.head;
-        for (int i = 0; i < index; i++) {
-            current = current.next;
-        }
-        return current.val;
+        if (index > this.length - 1 || index < 0) return -1;
+
+        Node curr = findNode(index);
+        return curr.val;
     }
 
     public void addAtHead(int val) {
-        Node newNode = new Node(val);
-        if (this.head != null) {
-            newNode.next = this.head;
+        Node node = new Node(val);
+        if (head != null) {
+            node.next = head;
+            head.prev = node;
         }
-        if (this.tail == null) this.tail = newNode;
-        this.head = newNode;
+        head = node;
         length++;
+
+        if (length == 1) tail = head;
     }
 
     public void addAtTail(int val) {
-        Node newNode = new Node(val);
-//        if (this.head != null) {
-//            Node current = this.head;
-//            while (current.next != null) {
-//                current = current.next;
-//            }
-//            current.next = newNode;
-//        } else {
-//            this.head = newNode;
-//        }
-        if (this.tail != null) {
-            this.tail.next = newNode;
+        Node node = new Node(val);
+        if (tail != null) {
+            tail.next = node;
+            node.prev = tail;
         }
-        if (this.head == null) {
-            this.head = newNode;
-        }
-        this.tail = newNode;
+        tail = node;
         length++;
+
+        if (length == 1) head = tail;
     }
 
     public void addAtIndex(int index, int val) {
-        if (index < 0 || index > this.length) return;
-        if (index == length) {
-            this.addAtTail(val);
-            return;
-        }
-        if (index == 0) {
-            this.addAtHead(val);
-            return;
-        }
+        if (index == length) addAtTail(val);
+        else if (index == 0) addAtHead(val);
+        else if (index >= 0 && index < length) {
+            Node node = new Node(val);
+            Node curr = findNode(index);
 
-        Node newNode = new Node(val);
-        Node curr = this.head;
+            node.next = curr;
+            node.prev = curr.prev;
+            curr.prev.next = node;
+            curr.prev = node;
+            length++;
 
-        for (int i = 0; i < index - 1; i++) {
-            curr = curr.next;
         }
-        newNode.next = curr.next;
-        curr.next = newNode;
-        length++;
+    }
+
+    private Node findNode(int index) {
+        Node curr;
+
+        if (index > length / 2) {
+            //go from tail
+            int i = length - 1;
+            curr = tail;
+            while (i-- != index) {
+                curr = curr.prev;
+            }
+        } else {
+            //go from head
+            int i = 0;
+            curr = head;
+            while (i++ != index) {
+                curr = curr.next;
+            }
+        }
+        return curr;
     }
 
     public void deleteAtIndex(int index) {
-        if (index < this.length) {
-            Node curr = head;
-            if (index == 0) {
-                if (head.next != null) {
-                    this.head = head.next;
-                } else {
-                    this.head = null;
-                    if (this.length == 1) {
-                        this.tail = null;
-                    }
-                }
-            } else {
-                for (int i = 0; i < index - 1; i++) {
-                    curr = curr.next;
-                }
-                if (this.tail == curr.next) {
-                    this.tail = curr;
-                }
-                if (curr.next.next != null) {
-                    curr.next = curr.next.next;
-                } else {
-                    curr.next = null;
-                }
-            }
+        if (index >= 0 && index < length) {
+            Node curr = findNode(index);
+            if (curr.prev != null) curr.prev.next = curr.next;
+            if (curr.next != null) curr.next.prev = curr.prev;
+
+            if (curr == head) head = curr.next;
+            if (curr == tail) tail = curr.prev;
             length--;
         }
     }
+
+    public class Node {
+        int val;
+        Node next;
+        Node prev;
+
+        Node(int val) {
+            this.val = val;
+            this.next = null;
+            this.prev = null;
+        }
+    }
 }
+
+
+
+
+

@@ -62,7 +62,7 @@ class MyLinkedListTest {
         list.addAtIndex(0, 10);
         list.addAtIndex(0, 20);
         list.addAtIndex(1, 30);
-        list.get(0);
+        System.out.println(list.get(0));
     }
 
     @Test
@@ -74,14 +74,14 @@ class MyLinkedListTest {
     @Test
     public void test10() {
         list.addAtHead(4);
-        list.get(1);
+        System.out.println(list.get(1));
         list.addAtHead(1);
         list.addAtHead(5);
         list.deleteAtIndex(3);
         list.addAtHead(7);
-        list.get(3);
-        list.get(3);
-        list.get(3);
+        System.out.println(list.get(3));
+        System.out.println(list.get(3));
+        System.out.println(list.get(3));
         list.addAtHead(1);
         list.deleteAtIndex(4);
     }
