@@ -1,11 +1,39 @@
 package dev.nartov;
 
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Main {
+
     public boolean isValidSudoku(char[][] board) {
+        Set<Character>[] rowMaps = new HashSet[9];
+        Set<Character>[] colMaps = new HashSet[9];
+        Set<Character>[] subBoxMaps = new HashSet[9];
+        for (int i = 0; i < 9; i++) {
+            rowMaps[i] = new HashSet<>();
+            colMaps[i] = new HashSet<>();
+            subBoxMaps[i] = new HashSet<>();
+        }
+
+        for (int rowIndex = 0; rowIndex < 9; rowIndex++) {
+            for (int colIndex = 0; colIndex < 9; colIndex++) {
+                char value = board[rowIndex][colIndex];
+                if (value != '.') {
+                    if (!rowMaps[rowIndex].add(value)) {
+                        return false;
+                    }
+                    if (!colMaps[colIndex].add(value) ) {
+                        return false;
+                    }
+                    int subBoxIndex = 3 * (rowIndex / 3) + (colIndex / 3);
+                    if (!subBoxMaps[subBoxIndex].add(value)) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+    public boolean isValidSudoku1(char[][] board) {
         Set<Key> set = new HashSet<>();
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[i].length; j++) {
