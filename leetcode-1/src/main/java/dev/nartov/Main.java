@@ -7,16 +7,18 @@ public class Main {
     public int[] twoSum(int[] nums, int target) {
         HashMap<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
-            int a = nums[i];
-            int b = target - a;
-            if (map.containsKey(b)){
-                int index = map.get(b);
-                if (index != i) {
-                    return new int[]{i, index};
-                }
+            int n = nums[i];
+            int complement = target - n;
+            Integer i2 = map.get(complement);
+            if (i2 != null) {
+                return new int[]{i,i2};
             }
-            map.put(a, i);
+            map.put(n, i);
         }
-        return new int[]{};
+        return null;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(Arrays.toString(new Main().twoSum(new int[]{3, 2, 4}, 6)));
     }
 }
