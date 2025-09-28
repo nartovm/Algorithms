@@ -12,25 +12,23 @@ import java.util.List;
  */
 class Solution {
     public ListNode removeNthFromEnd(ListNode head, int n) {
-        ListNode fast = head;
-        ListNode slow = head;
+        ListNode dummy = new ListNode();
+        dummy.next = head;
+        ListNode fast = dummy;
+        ListNode slow = dummy;
 
-        while (n != 0) {
+        while (n != -1) {
             fast = fast.next;
             n--;
         }
 
-        if (fast == null) {
-            return head.next;
-        }
-
-        while (fast != null && fast.next != null) {
+        while (fast != null) {
             fast = fast.next;
             slow = slow.next;
         }
         slow.next = slow.next.next;
 
-        return head;
+        return dummy.next;
     }
 
     public ListNode removeNthFromEnd2(ListNode head, int n) {
