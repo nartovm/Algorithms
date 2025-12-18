@@ -3,29 +3,30 @@ import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-
     public List<List<Integer>> pacificAtlantic(int[][] heights) {
         List<List<Integer>> results = new ArrayList<>();
-        if (heights == null || heights.length == 0 || heights[0].length == 0) return results;
+        if (heights == null) {
+            return null;
+        }
+        boolean[][] pacificReachable = new boolean[heights.length][heights[0].length];
+        boolean[][] atlanticReachable = new boolean[heights.length][heights[0].length];
 
-        int rows = heights.length;
-        int cols = heights[0].length;
-
-        boolean[][] pacificReachable = new boolean[rows][cols];
-        boolean[][] atlanticReachable = new boolean[rows][cols];
-
-        for (int i = 0; i < rows; i++) {
-            dfs(i, 0, pacificReachable, heights[i][0], heights);
-            dfs(i, cols-1, atlanticReachable, heights[i][cols - 1], heights);
+        for (int i = 0; i < heights.length; i++) {
+            // [i][0] pacific
+            // [i][heights[0].length] atlantic
+            dfs(i, 0, heights, heights[i][0], pacificReachable);
+            dfs(i, heights[0].length - 1, heights, heights[i][heights[0].length - 1], atlanticReachable);
         }
 
-        for (int j = 0; j < cols; j++) {
-            dfs(0, j, pacificReachable, heights[0][j], heights);
-            dfs(rows - 1, j, atlanticReachable, heights[rows - 1][j], heights);
+        for (int j = 0; j < heights[0].length; j++) {
+            // [0][j] pacific
+            // [heights[0].length-1][j] atlantic
+            dfs(0, j, heights, heights[0][j], pacificReachable);
+            dfs(heights.length - 1, j, heights, heights[heights.length - 1][j], atlanticReachable);
         }
 
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < cols; j++) {
+        for (int i = 0; i < pacificReachable.length; i++) {
+            for (int j = 0; j < pacificReachable[0].length; j++) {
                 if (pacificReachable[i][j] && atlanticReachable[i][j]) {
                     results.add(Arrays.asList(i, j));
                 }
@@ -35,33 +36,27 @@ class Solution {
         return results;
     }
 
-    private void dfs(int i, int j, boolean[][] reachable, int prevHeight, int[][] heights) {
-        if (i < 0 || i >= heights.length || j < 0 || j >= heights[0].length) {
+    private void dfs(int i, int j, int[][] heights, int prevHeight, boolean[][] reachable) {
+        if (i < 0 || i > heights.length - 1 || j < 0 || j > heights[0].length - 1) {
             return;
         }
+
         if (reachable[i][j]) {
             return;
         }
-        if (heights[i][j] < prevHeight) {
+
+        if (prevHeight > heights[i][j]) {
             return;
         }
 
         reachable[i][j] = true;
 
-        record Pair(int i, int j) {
-        }
+        dfs(i - 1, j, heights, heights[i][j], reachable);
+        dfs(i + 1, j, heights, heights[i][j], reachable);
+        dfs(i, j - 1, heights, heights[i][j], reachable);
+        dfs(i, j + 1, heights, heights[i][j], reachable);
 
-        Pair[] pairs = {
-                new Pair(i-1,j),
-                new Pair(i,j-1),
-                new Pair(i+1,j),
-                new Pair(i,j+1)
-        };
-        for (Pair neighbor : pairs) {
-            dfs(neighbor.i, neighbor.j, reachable, heights[i][j], heights);
-        }
     }
-
 
     // --- MAIN ДЛЯ ТЕСТОВ ---
     public static void main(String[] args) {
@@ -95,7 +90,6 @@ class Solution {
         System.out.println("Input Grid:");
         printGrid(heights2);
 
-        solver = new Solution();
         List<List<Integer>> result2 = solver.pacificAtlantic(heights2);
         System.out.println("Your Output: " + result2);
         System.out.println("Expected:    [[0, 0]]");
